@@ -10,3 +10,7 @@ export const SigninSchema = z.object({
     username: z.string(),
     password: z.string(),
 })
+
+export const UpdateMetadataSchema = z.object({
+    avatarId: z.string()
+})

@@ -38,3 +38,23 @@ export const CreateElementSchema = z.object({
     height: z.number(),
     static: z.boolean(),
 })
+
+export const UpdateElementSchema = z.object({
+    imageUrl: z.string()
+})
+
+export const CreateAvatarSchema = z.object({
+    imageUrl: z.string(),
+    name: z.string()
+})
+
+export const CreateMapSchema = z.object({
+    thumbnail: z.string(),
+    dimensions: z.string(),
+    name: z.string(),
+    defaultElements: z.array(z.object({
+        elementId: z.string(),
+        x: z.number(),
+        y: z.number()
+    }))
+})

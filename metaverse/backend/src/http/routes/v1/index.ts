@@ -3,6 +3,9 @@ import client from '../../../db/index'
 import { SigninSchema, SignupSchema } from '../../types'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import { userRouter } from './user'
+import { spaceRouter } from './space'
+import { adminRouter } from './admin'
 
 export const router = express.Router()
 
@@ -28,6 +31,9 @@ router.post("/signup", async (req, res) => {
                 password: hashedPassword,
                 role: parsedData.data.type === "admin" ? "Admin" : "User",
             }
+        })
+        res.json({
+            userId: user.id
         })
     } catch (error) {
         console.log("error thrown")
@@ -82,7 +88,7 @@ router.get('/elements', async (req, res) => {
     const elements = await client.element.findMany()
 
     res.json({
-        elements: elements.map(e => ({
+        elements: elements.map(( e: any )=> ({
             id: e.id,
             imageUrl: e.imageUrl,
             width: e.width,
@@ -95,10 +101,14 @@ router.get('/elements', async (req, res) => {
 router.get('/avatars', async (req, res) => {
     const avatars = await client.avatar.findMany()
     res.json({
-        avatars: avatars.map(x => ({
+        avatars: avatars.map(( x: any )=> ({
             id: x.id,
             imageUrl: x.imageUrl,
             name: x.name
         }))
     })
 })
+
+router.use("/user", userRouter);
+router.use("/space", spaceRouter);
+router.use("/admin", adminRouter);

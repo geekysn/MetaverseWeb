@@ -1,6 +1,45 @@
-const axios = require("axios");
+const axios2 = require("axios");
 
 const BACKEND_URL = "http://localhost:3000"
+
+const axios = {
+    post: async(...args)=>{
+        try{
+            const res = await axios2.post(...args);
+            return res;
+        }
+        catch(e){
+            return e.response;
+        }
+    },
+    get: async(...args)=>{
+        try{
+            const res = await axios2.get(...args);
+            return res;
+        }
+        catch(e){
+            return e.response;
+        }
+    },
+    put: async(...args)=>{
+        try{
+            const res = await axios2.put(...args);
+            return res;
+        }
+        catch(e){
+            return e.response;
+        }
+    },
+    delete: async(...args)=>{
+        try{
+            const res = await axios2.delete(...args);
+            return res;
+        }
+        catch(e){
+            return e.response;
+        }
+    },
+}
 
 describe("Authentication", ()=>{
     test('User is able to Sign Up only once', async()=>{
@@ -28,7 +67,7 @@ describe("Authentication", ()=>{
         const username = `metaverse-${Math.random()}`;
         const password = "password"
 
-        const res = await axios.post(`${BACKEND_URL}/api/v1/signup`,()=>{
+        const res = await axios.post(`${BACKEND_URL}/api/v1/signup`,{
             password
         })
         expect(res.status).toBe(400)
@@ -62,7 +101,7 @@ describe("Authentication", ()=>{
             type: 'admin'
         })
 
-        const res = await axios.post(`${BACKEND_URL}/api/v1/signin`, async()=>{
+        const res = await axios.post(`${BACKEND_URL}/api/v1/signin`,{
             username: "WrongUser",
             password
         })
@@ -329,15 +368,14 @@ describe("Space Information", ()=>{
     test("User is able to delete a space which they created", async()=>{
         const res = await axios.post(`${BACKEND_URL}/api/v1/space`, {
             "name": "Test",
-            "dimensions": "100x200",
-            "mapId": mapId
+            "dimensions": "100x200"
         },{
             headers:{
                 Authorization:` Bearer ${userToken}`
             }
         })
 
-        const deleteRes = await axios.delete(`${BACKEND_URL}/api/v1/space:${res.data.spaceId}`,{
+        const deleteRes = await axios.delete(`${BACKEND_URL}/api/v1/space/${res.data.spaceId}`,{
             headers:{
                 Authorization:`Bearer ${userToken}`
             }
@@ -348,20 +386,19 @@ describe("Space Information", ()=>{
     test("User is not able to delete a space created by another user", async()=>{
         const res = await axios.post(`${BACKEND_URL}/api/v1/space`, {
             "name": "Test",
-            "dimensions": "100x200",
-            "mapId": mapId
+            "dimensions": "100x200"
         },{
             headers:{
                 Authorization:` Bearer ${userToken}`
             }
         })
 
-        const deleteRes = await axios.delete(`${BACKEND_URL}/api/v1/space:${res.data.spaceId}`,{
+        const deleteRes = await axios.delete(`${BACKEND_URL}/api/v1/space/${res.data.spaceId}`,{
             headers:{
                 Authorization:`Bearer ${adminToken}`
             }
         })
-        expect(deleteRes.status).toBe(400);
+        expect(deleteRes.status).toBe(403);
     })
 
     test("Admin has no space initially", async()=>{
